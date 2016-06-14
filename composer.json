@@ -1,0 +1,20 @@
+{
+    "name": "oasis1992/sociauth",
+    "description": "Designed for Authentication with Facebook, Twitter, GitHub. Laravel version 5.1 to 5.2",
+    "license": "Apache2.0",
+    "authors": [
+        {
+            "name": "Gabriel Gerardo Rodríguez Díaz",
+            "email": "gabriel_rodriguez_diaz@hotmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "laravel/socialite": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Oasis1992\\Sociauth\\": "src/"
+        }
+    }
+}
