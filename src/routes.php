@@ -6,8 +6,8 @@
  * Time: 5:27
  */
 
-Route::group(['middleware' => ['web'], 'namespace' => 'Oasis1992\Sociauth\Controllers', 'prefix' => 'sociauth'], function () {
-    Route::get('login/{provider}', [
+Route::group(['middleware' => ['web'], 'namespace' => 'Oasis1992\Sociauth\Controllers', 'prefix' => '/'], function () {
+    Route::get(env('ROUTE_NAME').'/{provider}', [
         'as'   => 'login_provider',
         'uses' => 'AuthenticateUserController@execute'
     ]);

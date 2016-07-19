@@ -52,7 +52,7 @@ class ViewResponseController implements FacebookResponse
         return redirect()->route($route, ['token' => $user_social->token]);
     }
 
-    public function userLogout($url, $route){
-        return redirect()->route($route)->with($this->param, $url);
+    public function userLogout($url, $route, $provider){
+        return redirect()->route($route, ['provider' => $provider])->with($this->param, $url);
     }
 }

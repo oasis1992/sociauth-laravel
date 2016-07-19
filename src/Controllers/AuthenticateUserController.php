@@ -155,6 +155,6 @@ class AuthenticateUserController extends Controller{
             $session->delete();
         }
 
-        return $this->facebookRespose->userLogout($this->generateUrlfacebook(), env('FACEBOOK_LOGOUT_REDIRECT_RESULT'));
+        return $this->facebookRespose->userLogout($this->generateUrlfacebook(), env('FACEBOOK_LOGOUT_REDIRECT_RESULT'), $this->provider);
     }
 }

@@ -14,5 +14,5 @@ interface FacebookResponse{
 
     public function userHasLoggedIn($route, $user);
 
-    public function userLogout($url, $route);
+    public function userLogout($url, $route, $provider);
 }
