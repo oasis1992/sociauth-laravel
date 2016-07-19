@@ -27,7 +27,7 @@ class ViewResponseController implements FacebookResponse
      * @param $view|string
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function denegateByUSer($url, $params, $view)
+    public function denegateByUser($url, $params, $view)
     {
         return View($view)->with($this->param, $url);
     }
@@ -47,8 +47,12 @@ class ViewResponseController implements FacebookResponse
      * @param $view|string
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function userHasLoggedIn($route)
+    public function userHasLoggedIn($route, $user_social)
     {
-        return redirect()->route($route);
+        return redirect()->route($route, ['token' => $user_social->token]);
+    }
+
+    public function userLogout($url, $route){
+        return redirect()->route($route)->with($this->param, $url);
     }
 }

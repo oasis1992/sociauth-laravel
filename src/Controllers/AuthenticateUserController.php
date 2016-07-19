@@ -4,18 +4,21 @@ namespace Oasis1992\Sociauth\Controllers;
 /**
  * User: gabriel_gerardo_rodriguez_diaz (oasis1992)
  */
+use App\TimeSession;
 use App\UserSocial;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Oasis1992\Sociauth\Contracts\Redirects\FacebookResponse;
+use Oasis1992\Sociauth\Repositories\TokenSessionRepository;
 use Oasis1992\Sociauth\Repositories\UserSocialRepository;
 use Oasis1992\Sociauth\Support;
 
 class AuthenticateUserController extends Controller{
     /* environment variables Views */
     const FACEBOOK_LOGIN_VIEW = "FACEBOOK_LOGIN_VIEW";
+    const FACEBOOK_LOGOUT_REDIRECT_RESULT = "FACEBOOK_LOGOUT_REDIRECT_RESULT";
     const FACEBOOK_LOGIN_REDIRECT_RESULT = "FACEBOOK_LOGIN_REDIRECT_RESULT";
 
     
@@ -24,6 +27,7 @@ class AuthenticateUserController extends Controller{
     
     /* repositories */
     private $userSocialRespository;
+    private $tokenSessionRepository;
     const FACEBOOK = "facebook";
     private $arrayMessages;
     private $user = null;
@@ -50,11 +54,12 @@ class AuthenticateUserController extends Controller{
     {
         $this->facebookRespose = $facebookResponse;
         $this->userSocialRespository = new UserSocialRepository();
+        $this->tokenSessionRepository = new TokenSessionRepository();
         $this->arrayMessages = array('message' => '');
         $this->provider = "facebook";
     }
     
-    public function execute(Request $request)
+    public function execute(Request $request, $provider)
     {
        return $this->accessPermissionByUser($request);
     }
@@ -65,8 +70,6 @@ class AuthenticateUserController extends Controller{
      */
     public function handleProviderCallback($request)
     {
-
-
         if(Auth::check() == false){
             $state = $request->get('state');
             $request->session()->put('state',$state);
@@ -80,11 +83,13 @@ class AuthenticateUserController extends Controller{
         if($request->has('code'))
         {
             $this->user = $this->handleProviderCallback($request);
-            $userSocial = $this->userSocialRespository->findByUserOrCreate($this->user);
-            $isLogin = $this->setAuth($userSocial);
+            $user_social = $this->userSocialRespository->findByUserOrCreate($this->user);
+            // crear session por token
+            $this->tokenSessionRepository->setSession($user_social);
+            $isLogin = $this->setAuth($user_social);
 
             if($isLogin){
-                return $this->facebookRespose->userHasLoggedIn(env(self::FACEBOOK_LOGIN_REDIRECT_RESULT));
+                return $this->facebookRespose->userHasLoggedIn(env(self::FACEBOOK_LOGIN_REDIRECT_RESULT), $user_social);
             }else{
                 return $this->facebookRespose->firsrLogin($this->generateUrlfacebook(), env(self::FACEBOOK_LOGIN_VIEW)); // redirecccionar en caso de problema con login
             }
@@ -144,7 +149,12 @@ class AuthenticateUserController extends Controller{
     }
 
     public function logout(Request $request){
-        Auth::logout();
-        return redirect()->route('login_provider', ['provider' => $request->provider]);
+        $user = UserSocial::where('token','=', $request->token)->first();
+        $session = TimeSession::where('user_id','=', $user->id)->first();
+        if($session){
+            $session->delete();
+        }
+
+        return $this->facebookRespose->userLogout($this->generateUrlfacebook(), env('FACEBOOK_LOGOUT_REDIRECT_RESULT'));
     }
 }

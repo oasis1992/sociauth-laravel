@@ -13,13 +13,16 @@ class UserSocialRepository
 {
     public function findByUserOrCreate($userData)
     {
-        $user = UserSocial::where('email', '=', $userData->email)->first();
+
+        $user = UserSocial::where('id_facebook', '=', $userData->user['id'])->first();
         if($user)
         {
             return $user;
         }else{
+
             return UserSocial::firstOrCreate([
                 'name' => $userData->name,
+                'token' => $userData->token,
                 'email' => $userData->email,
                 'avatar_original' => $userData->avatar_original,
                 'avatar' => $userData->avatar,

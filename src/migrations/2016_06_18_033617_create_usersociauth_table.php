@@ -15,6 +15,7 @@ class CreateUsersociauthTable extends Migration
         Schema::create('sociauth', function (Blueprint $table) {
             $table->increments('id');
             $table->string('id_facebook');
+            $table->text('token');// token facebook
             $table->string('name');
             $table->string('email');
             $table->string('avatar');

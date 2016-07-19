@@ -1,6 +1,6 @@
 <?php
 
-namespace Oasis1992\Sociauth\Models;
+namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -13,7 +13,7 @@ class UserSocial extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id_facebook', 'name', 'email', 'avatar', 'avatar_original', 'gender'
+        'id_facebook', 'token', 'name', 'email', 'avatar', 'avatar_original', 'gender'
     ];
 
     /**

@@ -8,10 +8,11 @@ namespace Oasis1992\Sociauth\Contracts\Redirects;
 interface FacebookResponse{
     public function firsrLogin($url, $view);
 
-    public function denegateByUSer($url, $params, $view);
+    public function denegateByUser($url, $params, $view);
 
     public function errorLogin($url, $params, $view);
 
-    public function userHasLoggedIn($view);
+    public function userHasLoggedIn($route, $user);
 
+    public function userLogout($url, $route);
 }
